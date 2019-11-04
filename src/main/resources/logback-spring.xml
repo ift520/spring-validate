@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+    <!-- 读取Spring配置文件中的属性来生成日志文件名 -->
+    <!--<springProperty scope="context" name="logName" source="spring.application.name" defaultValue="local"/>-->
+    <!--根据不同环境设置日志存放路径-->
+    <!--<springProfile name="dev">-->
+        <!--<property name="logHome" value="f:/logs/${logName}"/>-->
+    <!--</springProfile>-->
+    <!--<springProfile name="prod">-->
+        <!--<property name="logHome" value="/opt/logs/${logName}"/>-->
+    <!--</springProfile>-->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_PATH}/info/%d{yyyy-MM-dd}/info.%i.log</FileNamePattern>
+            <MaxHistory>180</MaxHistory>
+            <!--指定日志文件最大值，超过会分割-->
+            <MaxFileSize>25MB</MaxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_LOG"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!--配置每天产生一个新的日志-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_PATH}/error/%d{yyyy-MM-dd}/error.%i.log</FileNamePattern>
+            <MaxHistory>180</MaxHistory>
+            <!--指定日志文件最大值，超过会分割-->
+            <MaxFileSize>25MB</MaxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="INFO_LOG"/>
+        <appender-ref ref="ERROR_LOG"/>
+    </root>
+</configuration>

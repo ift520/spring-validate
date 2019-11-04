@@ -1,0 +1,2 @@
+logging:
+    path: f://logs/${spring.application.name}
